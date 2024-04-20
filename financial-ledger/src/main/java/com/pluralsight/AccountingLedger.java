@@ -3,6 +3,7 @@ package com.pluralsight;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -26,6 +27,7 @@ public class AccountingLedger {
         System.out.println("(D) Add Deposit - Add a deposit to the ledger");
         System.out.println("(P) Make Payment (Debit) - Make a payment and deduct it from the ledger");
         System.out.println("(L) Ledger - Display the ledger");
+        System.out.println("(B) Balance - View Ledger Balance");
         System.out.println("(X) Exit - Exit the application");
         // Prompt user for input
         System.out.print("Enter your choice: ");
@@ -48,8 +50,8 @@ public class AccountingLedger {
                 // Call method to display ledger
                 displayLedger(scanner);
                 break;
-            case"N":
-                getNetworth();
+            case"B":
+                calculateLedgerBalance();
                 break;
             case "X":
                 // Handle Exit option
@@ -109,19 +111,20 @@ public class AccountingLedger {
 
         switch (choice) {
             case "1":
-                // Handle Month To Date
+                ledgerMonthToDateReport(scanner);
                 break;
             case "2":
-                // Handle Previous Month
+                ledgerPreviousMonthReport(scanner);
                 break;
             case "3":
-                // Handle Year To Date
+                ledgerYearToDateReport(scanner);
                 break;
             case "4":
-                // Handle Previous Year
+                ledgerPreviousYearReport(scanner);
                 break;
             case "5":
                 // Handle Search by Vendor
+                searchByVender(scanner);
                 break;
             case "6":
                 // Handle Custom Search
@@ -141,6 +144,158 @@ public class AccountingLedger {
                 displayReports(scanner);
         }
     }
+
+//    public static void customReportSearch(Scanner scanner) {
+//        System.out.println("\nReports - Access pre-defined reports or run custom searches:");
+//        System.out.println("Search Criteria:");
+//        System.out.println("1. Start Date");
+//        System.out.println("2. End Date");
+//        System.out.println("3. Description");
+//        System.out.println("4. Vendor");
+//        System.out.println("5. Amount");
+//
+//        // Read user's choice
+//        System.out.print("Enter your choice (1-5): ");
+//        String customSearchChoice = scanner.nextLine().toUpperCase().trim();
+//
+//        // Process user's choice
+////        switch (customSearchChoice) {
+////            case "1":
+////
+////                break;
+////            case "2":
+////
+////                break;
+////            case "3":
+////
+////                break;
+////            case "4":
+////
+////                break;
+////            case "5":
+////
+////                break;
+////            default:
+////                System.out.println("Invalid choice!");
+////        }
+//    }
+//    }
+
+
+
+    public static void searchByVender(Scanner scanner) throws IOException {
+        System.out.print("Please enter the name of the vendor you wish to search for: ");
+        String userVenderInput = scanner.nextLine().toUpperCase();
+
+        for(Transaction transaction : transactionHistory){
+            if(transaction.getVendor().toUpperCase().contains(userVenderInput)){
+                System.out.println(transaction);
+            }
+        }
+
+        goToHomeScreen(scanner);
+    }
+
+
+    public static void ledgerMonthToDateReport(Scanner scanner) throws IOException {
+        //Get current date
+        LocalDate currentDate = LocalDate.now();
+        //Get first day of the month with its methods
+        LocalDate firstDayOfMonth = currentDate.withDayOfMonth(1);
+        //loop through the ArrayList
+        System.out.println("------------------------------------------------------------");
+        System.out.printf("\t\tReports from %s through %s%n", firstDayOfMonth, currentDate);
+        System.out.println("------------------------------------------------------------");
+        for(Transaction transaction : transactionHistory){
+            //Change the getter from a string to a LocalDate Object
+            LocalDate transactionDate = LocalDate.parse(transaction.getDate());
+            //Check if date is equal to today or is after the first of current month AND is before the current date
+            if(transactionDate.isEqual(currentDate) || (transactionDate.isAfter(firstDayOfMonth) && transactionDate.isBefore(currentDate))) {
+                System.out.println(transaction);
+            }
+        }
+
+        goToHomeScreen(scanner);
+    }
+
+    public static void ledgerPreviousMonthReport(Scanner scanner) throws IOException {
+        // Get current date
+        LocalDate currentDate = LocalDate.now();
+
+        // Get the first day of the previous month
+        LocalDate firstDayOfPreviousMonth = currentDate.minusMonths(1).withDayOfMonth(1);
+
+        // Get the last day of the previous month
+        LocalDate lastDayOfPreviousMonth = currentDate.minusMonths(1).withDayOfMonth(currentDate.minusMonths(1).lengthOfMonth());
+        //calculates and assigns the last day of the previous month to the variable
+        System.out.println("------------------------------------------------------------");
+        System.out.printf("\t\tReports from %s through %s%n", firstDayOfPreviousMonth, lastDayOfPreviousMonth);
+        System.out.println("------------------------------------------------------------");
+
+        for (Transaction transaction : transactionHistory) {
+            // Change the getter from a string to a LocalDate Object
+            LocalDate transactionDate = LocalDate.parse(transaction.getDate());
+
+            // Check if the transaction date falls within the previous month
+            if (transactionDate.isEqual(firstDayOfPreviousMonth) ||
+                    (transactionDate.isAfter(firstDayOfPreviousMonth) && transactionDate.isBefore(lastDayOfPreviousMonth.plusDays(1)))) {
+                System.out.println(transaction);
+            }
+        }
+
+        goToHomeScreen(scanner);
+    }
+
+    public static void ledgerYearToDateReport(Scanner scanner) throws IOException {
+        //Get current date
+        LocalDate currentDate = LocalDate.now();
+        //Get first day of the month with its methods
+        LocalDate firstDayOfYear = LocalDate.of(currentDate.getYear(), Month.JANUARY, 1);
+        //loop through the ArrayList
+        System.out.println("------------------------------------------------------------");
+        System.out.printf("\t\tReports from %s through %s%n", firstDayOfYear, currentDate);
+        System.out.println("------------------------------------------------------------");
+        for(Transaction transaction : transactionHistory){
+            //Change the getter from a string to a LocalDate Object
+            LocalDate transactionDate = LocalDate.parse(transaction.getDate());
+            //Check if date is equal to today or is after the first of current month AND is before the current date
+            if(transactionDate.isEqual(currentDate) || (transactionDate.isAfter(firstDayOfYear) && transactionDate.isBefore(currentDate))) {
+                System.out.println(transaction);
+            }
+        }
+
+        goToHomeScreen(scanner);
+    }
+
+    public static void ledgerPreviousYearReport(Scanner scanner) throws IOException {
+        // Get current date
+        LocalDate currentDate = LocalDate.now();
+
+        // Get the first day of the previous year
+        LocalDate firstDayOfPreviousYear = currentDate.minusYears(1).withDayOfYear(1);
+
+        // Get the last day of the previous year
+        LocalDate lastDayOfPreviousYear = firstDayOfPreviousYear.plusYears(1).minusDays(1);
+
+        //calculates and assigns the last day of the previous month to the variable
+        System.out.println("------------------------------------------------------------");
+        System.out.printf("\t\tReports from %s through %s%n", firstDayOfPreviousYear, lastDayOfPreviousYear);
+        System.out.println("------------------------------------------------------------");
+
+        for (Transaction transaction : transactionHistory) {
+            // Change the getter from a string to a LocalDate Object
+            LocalDate transactionDate = LocalDate.parse(transaction.getDate());
+
+            // Check if the transaction date falls within the previous month
+            if (transactionDate.isEqual(firstDayOfPreviousYear) ||
+                    (transactionDate.isAfter(firstDayOfPreviousYear) && transactionDate.isBefore(lastDayOfPreviousYear.plusDays(1)))) {
+                System.out.println(transaction);
+            }
+        }
+
+        goToHomeScreen(scanner);
+    }
+
 
     public static void displayTransactions(String displayOption, Scanner scanner) throws IOException {
         System.out.println("Transactions (" + displayOption + "):");
@@ -310,21 +465,22 @@ public class AccountingLedger {
         }
     }
 
-    public static void getNetworth() {
-        double totalPositive = 0;
-        double totalNegative = 0;
+    public static void calculateLedgerBalance() {
+        double totalIncome = 0;
+        double totalExpenses = 0;
 
         for(Transaction transaction : transactionHistory){
             if(transaction.getAmount() > 0){
-                totalPositive += transaction.getAmount();
-            }else{
-                totalNegative += transaction.getAmount();
+                totalIncome += transaction.getAmount();
+            } else {
+                totalExpenses += transaction.getAmount();
             }
         }
 
-        System.out.println("Total Income: " + totalPositive);
-        System.out.println("Total Expenses: " + (- totalNegative));
-        double netWorth = totalPositive + totalNegative;
-        System.out.println("Net Worth: " + netWorth);
+        System.out.println("\nTotal Income: $" + totalIncome);
+        System.out.println("Total Expenses: -$" + (-totalExpenses));
+        double balance = totalIncome + totalExpenses;
+        System.out.println("Ledger Balance: $" + balance);
     }
+
 }
