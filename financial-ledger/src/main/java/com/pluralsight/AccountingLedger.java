@@ -141,7 +141,7 @@ public class AccountingLedger {
             default:
                 // If user types the wrong option not displayed. Use recursion by calling the
                 // method within itself
-                System.out.println("Invalid choice. Please enter a valid option.");
+                System.out.println("\n----Invalid choice. Please enter a valid option.----\n");
                 displayHomeScreen(scanner);
         }
         // Releases all resources associated with the reader.
@@ -259,7 +259,7 @@ public class AccountingLedger {
             default:
                 // If user types the wrong option not displayed. Use recursion by calling the
                 // method within itself
-                System.out.println("Invalid choice. Please choose a valid option (A, D, P, or R).");
+                System.out.println("\n----Invalid choice. Please choose a valid option (A, D, P, or R).----\n");
                 displayLedger(scanner);
         }
 
@@ -354,10 +354,10 @@ public class AccountingLedger {
         System.out.println("\t\tYour Current Ledger Balance Report");
         System.out.println("------------------------------------------------------------");
 
-        System.out.println("Total Income: $" + totalIncome);
-        System.out.println("Total Expenses: -$" + (-totalExpenses));
+        System.out.printf("Total Income: $%,.2f" ,totalIncome);
+        System.out.printf("\nTotal Expenses: $%,.2f", totalExpenses);
         double balance = totalIncome + totalExpenses;
-        System.out.println("Ledger Balance: $" + balance);
+        System.out.printf("\nLedger Balance: $%,.2f", balance);
 
         // Navigate back to the home screen
         goToHomeScreen(scanner);
