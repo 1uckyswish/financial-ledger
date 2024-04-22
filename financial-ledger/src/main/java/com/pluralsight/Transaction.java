@@ -1,5 +1,8 @@
 package com.pluralsight;
 
+/**
+ * Represents a financial transaction with date, time, description, vendor, and amount.
+ */
 public class Transaction {
     private String date;
     private String time;
@@ -7,6 +10,14 @@ public class Transaction {
     private String vendor;
     private double amount;
 
+    /**
+     * Constructs a transaction with the given details.
+     * @param date        The date of the transaction
+     * @param time        The time of the transaction
+     * @param description The description of the transaction
+     * @param vendor      The vendor involved in the transaction
+     * @param amount      The amount of money involved in the transaction
+     */
     public Transaction(String date, String time, String description, String vendor, double amount) {
         this.date = date;
         this.time = time;
@@ -57,10 +68,17 @@ public class Transaction {
 
     @Override
     public String toString() {
-        return "date='" + date + '\'' +
-                ", time='" + time + '\'' +
-                ", description='" + description + '\'' +
-                ", vendor='" + vendor + '\'' +
-                ", amount=" + amount;
+        return String.format(
+                "+------------+--------------------------+\n" +
+                        "| Date       | '%s'\n" +
+                        "| Time       | '%s'\n" +
+                        "| Description| '%s'\n" +
+                        "| Vendor     | '%s'\n" +
+                        "| Amount     | $%s\n" +
+                        "+------------+--------------------------+",
+                date, time, description, vendor, amount);
     }
+
+
+
 }

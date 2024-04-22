@@ -1,7 +1,5 @@
 Step 1: Set Up Your Project
 
-    - Set up Java Development Kit (JDK) on your computer if you haven't already.
-    - Choose an Integrated Development Environment (IDE) such as Eclipse, IntelliJ IDEA, or NetBeans, and install it.
     - Create a new Java project in your chosen IDE.
     - Set up a directory structure for your project, organizing files into folders such as src (for source code), data (for data files like CSV), and any other necessary folders.
 
@@ -26,7 +24,6 @@ Step 2: Implement Basic Functionality
         - Ensure that entries are displayed with the newest entries first.
 
 Step 3: Add Additional Features
-
     - Implement the "Reports" functionality:
         - Create a new screen for reports.
         - Implement predefined report options (Month to Date, Year to Date, etc.).
@@ -40,7 +37,6 @@ Step 3: Add Additional Features
         - Fix any bugs or issues that arise during testing.
 
 Step 4: Refactor and Improve
-
     - Refactor your code:
         - Simplify complex code.
         - Break down large methods into smaller, more manageable ones.

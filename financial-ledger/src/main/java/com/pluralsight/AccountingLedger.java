@@ -55,7 +55,7 @@ public class AccountingLedger {
             // Split the line by the pipe character (|)
             String[] transactionsSplit = line.split(Pattern.quote("|"));
             // Pass the values that are split as arguments to a method that creates a NEW
-            // INSTANCE OF A CLASS
+            // INSTANCE OF A CLASS,
             // Create a new Transaction object from the split values and add it to the
             // transaction history ArrayList
             transactionHistory.add(createTransactionFromCsv(transactionsSplit));
@@ -166,7 +166,7 @@ public class AccountingLedger {
         System.out.print("Do you want to use the current date? (Y/N): ");
         String choice = scanner.nextLine().toUpperCase();
         String date;
-        // If user chooses to use the current date, set it to the current date
+        // If a user chooses to use the current date, set it to the current date
         if (choice.equals("Y")) {
             date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         } else {
@@ -180,7 +180,7 @@ public class AccountingLedger {
         choice = scanner.nextLine().toUpperCase();
         LocalTime currentTime = LocalTime.now();
         String time;
-        // If user chooses to use the current time, set it to the current time
+        // If a user chooses to use the current time, set it to the current time
         if (choice.equals("Y")) {
             time = currentTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
         } else {
@@ -240,7 +240,7 @@ public class AccountingLedger {
         // Another way would be to do the .equalsIgnore()
         switch (choice) {
             // Invoke the same method to handle the first three options.
-            // specifying the category, each option corresponds to as the first argument
+            // Specifying the category, each option corresponds to as the first argument
             // pass scanner as the second argument
             case "A":
                 displayTransactions("All", scanner);
@@ -275,7 +275,7 @@ public class AccountingLedger {
      */
     public static void displayTransactions(String displayOption, Scanner scanner) throws IOException {
         // Display header for transactions based on the chosen option
-        System.out.println("Transactions (" + displayOption + "):");
+        System.out.println("\nTransactions (" + displayOption + "):");
         // Iterate through transaction history and filter based on the displayOption
         // variable
         for (Transaction transaction : transactionHistory) {
@@ -660,7 +660,7 @@ public class AccountingLedger {
             convertedAmountInput = Double.parseDouble(checkAmountInputStringValue);
         }
 
-        // Display header for custom search report
+        // Display header for a custom search report
         System.out.println("------------------------------------------------------------");
         System.out.println("\t\t\t\tYour Custom Search Report");
         System.out.println("------------------------------------------------------------");
@@ -731,3 +731,9 @@ public class AccountingLedger {
     }
 
 }
+
+/* -resources
+*How to write method comments-- https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html
+*How to check dates before or after-- https://docs.oracle.com/javase/8/docs/api/java/time/LocalDate.html
+*How to write a good read me-- https://www.makeareadme.com/
+*/
