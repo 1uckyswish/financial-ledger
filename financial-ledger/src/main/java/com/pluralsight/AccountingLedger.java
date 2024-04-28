@@ -17,6 +17,7 @@ public class AccountingLedger {
     // Hold all Transactions read from CSV file and apply them to an Arraylist to
     // easily append and retrieve values
     static ArrayList<Transaction> transactionHistory = new ArrayList<>();
+
     /**
      * Entry point of the Accounting Ledger application.
      *
@@ -357,7 +358,7 @@ public class AccountingLedger {
         System.out.println("\t\tYour Current Ledger Balance Report");
         System.out.println("------------------------------------------------------------");
 
-        System.out.printf("Total Income: $%,.2f" ,totalIncome);
+        System.out.printf("Total Income: $%,.2f", totalIncome);
         System.out.printf("\nTotal Expenses: $%,.2f", totalExpenses);
         double balance = totalIncome + totalExpenses;
         System.out.printf("\nLedger Balance: $%,.2f", balance);
@@ -609,7 +610,9 @@ public class AccountingLedger {
      */
     public static void searchByVendor(Scanner scanner) throws IOException {
         // Prompt the user to enter the name of the vendor to search for
-        String userVendorInput = UtilityMethods.validateStringInput(scanner, "Please enter the name of the vendor you wish to search for: ").toUpperCase();
+        String userVendorInput = UtilityMethods
+                .validateStringInput(scanner, "Please enter the name of the vendor you wish to search for: ")
+                .toUpperCase();
         // loop through the ArrayList to find matching results
         Collections.sort(transactionHistory, Comparator.comparing(Transaction::getDate).reversed());
         boolean vendorFound = false;
@@ -648,15 +651,9 @@ public class AccountingLedger {
 
         // Validate start date input
         String userStartDateInput = UtilityMethods.validateDateFormat(scanner, "\nStart date (YYYY-MM-DD): ", true);
-        if (!userStartDateInput.isEmpty()) {
-            checkStartDate = LocalDate.parse(userStartDateInput);
-        }
 
         // Validate end date input
-        String userEndDateInput =  UtilityMethods.validateDateFormat(scanner, "End date (YYYY-MM-DD): ", true);
-        if (!userEndDateInput.isEmpty()) {
-            checkEndDate = LocalDate.parse(userEndDateInput);
-        }
+        String userEndDateInput = UtilityMethods.validateDateFormat(scanner, "\nEnd date (YYYY-MM-DD): ", true);
 
         // Validate description input
         String checkDescription = UtilityMethods.validateStringInput(scanner, "Description: ", true).toLowerCase();
@@ -665,10 +662,7 @@ public class AccountingLedger {
         String checkVendor = UtilityMethods.validateStringInput(scanner, "Vendor: ", true).toLowerCase();
 
         // Validate amount input
-        String checkAmountInputStringValue = UtilityMethods.validateStringInput(scanner, "Amount (press Enter to skip): ", true);
-        if (!checkAmountInputStringValue.isEmpty()) {
-            convertedAmountInput = Double.parseDouble(checkAmountInputStringValue);
-        }
+        convertedAmountInput = UtilityMethods.validateDoubleInput(scanner, "Amount (press Enter to skip): ", true);
 
         // Display header for a custom search report
         System.out.println("------------------------------------------------------------");
@@ -704,7 +698,6 @@ public class AccountingLedger {
         // Return to the home screen
         goToHomeScreen(scanner);
     }
-
 
     /**
      * Redirects the user to the home screen or other options based on their choice.
@@ -742,9 +735,13 @@ public class AccountingLedger {
 
 }
 
-/* -resources
-*How to write method comments-- https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html
-*How to sort ArrayList by ASC -- https://www.bezkoder.com/java-sort-arraylist-of-objects/
-*How to check dates before or after-- https://docs.oracle.com/javase/8/docs/api/java/time/LocalDate.html
-*How to write a good read me-- https://www.makeareadme.com/
-*/
+/*
+ * -resources
+ * How to write method comments--
+ * https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html
+ * How to sort ArrayList by ASC --
+ * https://www.bezkoder.com/java-sort-arraylist-of-objects/
+ * How to check dates before or after--
+ * https://docs.oracle.com/javase/8/docs/api/java/time/LocalDate.html
+ * How to write a good read me-- https://www.makeareadme.com/
+ */

@@ -16,6 +16,9 @@ public class UtilityMethods {
         int input;
         while (true) {
             System.out.print(prompt);
+            if (allowEmpty && scanner.hasNextLine() && scanner.nextLine().isEmpty()) {
+                return 0; // Return 0 if input is empty and allowed
+            }
             if (scanner.hasNextInt()) {
                 input = scanner.nextInt();
                 break;
@@ -81,7 +84,8 @@ public class UtilityMethods {
             if (isValidDateFormat(date)) {
                 break;
             } else {
-                System.out.println("\n==== Sorry, that input is invalid. Please enter a valid date in the format (YYYY-MM-DD) ===\n");
+                System.out.print(
+                        "\n==== Sorry, that input is invalid. Please enter a valid date in the format (YYYY-MM-DD) ===\n");
             }
         }
         return date;
@@ -111,7 +115,8 @@ public class UtilityMethods {
             if (isValidTimeFormat(time)) {
                 break;
             } else {
-                System.out.println("\n==== Sorry, that input is invalid. Please enter a valid time in the format (HH:MM:SS) ===\n");
+                System.out.println(
+                        "\n==== Sorry, that input is invalid. Please enter a valid time in the format (HH:MM:SS) ===");
             }
         }
         return time;
