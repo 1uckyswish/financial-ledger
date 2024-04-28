@@ -395,6 +395,7 @@ public class AccountingLedger {
         // Format the transaction data and write it to the file
         writer.write(String.format("%s|%s|%s|%s|%.2f%n", date, time, description, vendor, amount));
         // Close the writer
+        writer.flush();
         writer.close();
     }
 
@@ -423,19 +424,19 @@ public class AccountingLedger {
         switch (choice) {
             case "1":
                 // Generate the Month To Date report to user
-                ledgerMonthToDateReport(scanner);
+                displayMonthToDateReport(scanner);
                 break;
             case "2":
                 // Generate the previous Month report to user
-                ledgerPreviousMonthReport(scanner);
+                displayPreviousMonthReport(scanner);
                 break;
             case "3":
                 // Generate a Year To Date report to user
-                ledgerYearToDateReport(scanner);
+                displayYearToDateReport(scanner);
                 break;
             case "4":
                 // Generate a Previous Year report to user
-                ledgerPreviousYearReport(scanner);
+                displayPreviousYearReport(scanner);
                 break;
             case "5":
                 // Handle Search by Vendor to user by user input
@@ -468,7 +469,7 @@ public class AccountingLedger {
      * @param scanner The Scanner object for user input.
      * @throws IOException If an I/O error occurs.
      */
-    public static void ledgerMonthToDateReport(Scanner scanner) throws IOException {
+    public static void displayMonthToDateReport(Scanner scanner) throws IOException {
         // Get current date
         LocalDate currentDate = LocalDate.now();
         // Get the first day of the month with its methods
@@ -499,7 +500,7 @@ public class AccountingLedger {
      * @param scanner The Scanner object for user input.
      * @throws IOException If an I/O error occurs.
      */
-    public static void ledgerPreviousMonthReport(Scanner scanner) throws IOException {
+    public static void displayPreviousMonthReport(Scanner scanner) throws IOException {
         // Get current date
         LocalDate currentDate = LocalDate.now();
 
@@ -539,7 +540,7 @@ public class AccountingLedger {
      * @param scanner The Scanner object for user input.
      * @throws IOException If an I/O error occurs.
      */
-    public static void ledgerYearToDateReport(Scanner scanner) throws IOException {
+    public static void displayYearToDateReport(Scanner scanner) throws IOException {
         // Get current date
         LocalDate currentDate = LocalDate.now();
         // Get the first day of the month with its methods
@@ -570,7 +571,7 @@ public class AccountingLedger {
      * @param scanner The Scanner object for user input.
      * @throws IOException If an I/O error occurs.
      */
-    public static void ledgerPreviousYearReport(Scanner scanner) throws IOException {
+    public static void displayPreviousYearReport(Scanner scanner) throws IOException {
         // Get current date
         LocalDate currentDate = LocalDate.now();
 
@@ -641,26 +642,28 @@ public class AccountingLedger {
      */
     public static void customReportSearch(Scanner scanner) throws IOException {
         // Declare variables to store user input and search criteria
-        LocalDate checkStartDate = null;
-        LocalDate checkEndDate = null;
-        double convertedAmountInput = 0.0;
         boolean foundMatch = false; // a boolean variable to track if any matches were found
-
+        double convertedAmountInput = 0.0;
         // Prompt the user to enter search criteria
         System.out.print("Reports - Please Insert the following Search Criteria: ");
 
         // Validate start date input
-        String userStartDateInput = UtilityMethods.validateDateFormat(scanner, "\nStart date (YYYY-MM-DD): ", true);
+        String userStartDateInput = UtilityMethods.validateDateFormat(scanner,
+                "\nStart date (YYYY-MM-DD) (press Enter to skip): ", true);
+        LocalDate checkStartDate = userStartDateInput.isEmpty() ? null : LocalDate.parse(userStartDateInput);
 
         // Validate end date input
-        String userEndDateInput = UtilityMethods.validateDateFormat(scanner, "\nEnd date (YYYY-MM-DD): ", true);
+        String userEndDateInput = UtilityMethods.validateDateFormat(scanner,
+                "End date (YYYY-MM-DD) (press Enter to skip): ", true);
+        LocalDate checkEndDate = userEndDateInput.isEmpty() ? null : LocalDate.parse(userEndDateInput);
 
         // Validate description input
-        String checkDescription = UtilityMethods.validateStringInput(scanner, "Description: ", true).toLowerCase();
+        String checkDescription = UtilityMethods
+                .validateStringInput(scanner, "Description (press Enter to skip): ", true).toLowerCase();
 
         // Validate vendor input
-        String checkVendor = UtilityMethods.validateStringInput(scanner, "Vendor: ", true).toLowerCase();
-
+        String checkVendor = UtilityMethods.validateStringInput(scanner, "Vendor (press Enter to skip): ", true)
+                .toLowerCase();
         // Validate amount input
         convertedAmountInput = UtilityMethods.validateDoubleInput(scanner, "Amount (press Enter to skip): ", true);
 
@@ -673,6 +676,7 @@ public class AccountingLedger {
             // Parses the date string from the Transaction object to a LocalDate object.
             // This allows us to perform date comparisons.
             LocalDate transactionDate = LocalDate.parse(transaction.getDate());
+
             // Check if the transaction matches the criteria
             boolean isStartDateMatched = checkStartDate == null || !transactionDate.isBefore(checkStartDate);
             boolean isEndDateMatched = checkEndDate == null || !transactionDate.isAfter(checkEndDate);
@@ -680,7 +684,7 @@ public class AccountingLedger {
                     || transaction.getDescription().toLowerCase().contains(checkDescription);
             boolean isVendorMatched = checkVendor.isEmpty()
                     || transaction.getVendor().toLowerCase().contains(checkVendor);
-            boolean isAmountMatched = convertedAmountInput == 0 || transaction.getAmount() == convertedAmountInput;
+            boolean isAmountMatched = convertedAmountInput == 0.0 || transaction.getAmount() == convertedAmountInput;
 
             // If all criteria are matched, display the transaction
             if (isStartDateMatched && isEndDateMatched && isDescriptionMatched && isVendorMatched && isAmountMatched) {
@@ -692,7 +696,7 @@ public class AccountingLedger {
 
         // If no matches are found, display a message
         if (!foundMatch) {
-            System.out.println("No transactions found matching the criteria.");
+            System.out.println("\nNo transactions found matching the criteria.");
         }
 
         // Return to the home screen

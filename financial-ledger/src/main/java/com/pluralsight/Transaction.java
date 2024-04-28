@@ -26,6 +26,17 @@ public class Transaction {
         this.amount = amount;
     }
 
+    /**
+     * Getter methods
+     * @return values from above
+     *
+     */
+
+    /**
+     * Setter methods
+     * @void updates values from above
+     *
+     */
     public String getDate() {
         return date;
     }
