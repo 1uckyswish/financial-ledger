@@ -1,11 +1,15 @@
 package com.pluralsight;
 
+import com.pluralsight.UtilityMethods.UtilityMethods;
+
 import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -13,7 +17,6 @@ public class AccountingLedger {
     // Hold all Transactions read from CSV file and apply them to an Arraylist to
     // easily append and retrieve values
     static ArrayList<Transaction> transactionHistory = new ArrayList<>();
-
     /**
      * Entry point of the Accounting Ledger application.
      *
@@ -171,8 +174,7 @@ public class AccountingLedger {
             date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         } else {
             // Prompt the user to enter a specific date
-            System.out.print("Please Enter The Date (YYYY-MM-DD): ");
-            date = scanner.nextLine();
+            date = UtilityMethods.validateDateFormat(scanner, "Please Enter The Date (YYYY-MM-DD): ");
         }
 
         // Ask the user if they want to use the current time
@@ -185,25 +187,21 @@ public class AccountingLedger {
             time = currentTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
         } else {
             // Ask the user to enter a specific time
-            System.out.print("Please Enter The Time (HH:MM:SS): ");
-            time = scanner.nextLine().trim();
+            time = UtilityMethods.validateTimeFormat(scanner, "Please Enter The Time (HH:MM:SS): ");
         }
         // Ask the user to enter a specific time
-        System.out.print("Please Enter The Description: ");
-        String description = scanner.nextLine().trim();
+        String description = UtilityMethods.validateStringInput(scanner, "Please Enter The Description: ");
 
-        System.out.print("Please Enter The Vendor: ");
-        String vendor = scanner.nextLine().trim();
+        String vendor = UtilityMethods.validateStringInput(scanner, "Please Enter The Vendor: ");
 
-        System.out.print("Please Enter The Amount: ");
-        double amount = scanner.nextDouble();
+        double amount = UtilityMethods.validateDoubleInput(scanner, "Please Enter The Amount: ");
+        scanner.nextLine(); // Consume the newline character left by nextDouble()
 
         // Convert positive amount to negative if it's a payment
         if (!isDeposit && amount > 0) {
             amount = -amount;
         }
 
-        scanner.nextLine(); // Consume the newline character left by nextDouble()
         // Use ternary to check what if (IsDeposit) is true or false
         System.out.println("- Summary of " + (isDeposit ? "Deposit" : "Payment") + " -");
         // Create a new transaction
@@ -278,6 +276,11 @@ public class AccountingLedger {
         System.out.println("\nTransactions (" + displayOption + "):");
         // Iterate through transaction history and filter based on the displayOption
         // variable
+        // Sort the transactionHistory list
+        // Create a comparator based on transaction dates
+        // Reverse the sorting order (latest to earliest)
+        Collections.sort(transactionHistory, Comparator.comparing(Transaction::getDate).reversed());
+
         for (Transaction transaction : transactionHistory) {
             switch (displayOption.toLowerCase()) {
                 case "all":
@@ -606,15 +609,21 @@ public class AccountingLedger {
      */
     public static void searchByVendor(Scanner scanner) throws IOException {
         // Prompt the user to enter the name of the vendor to search for
-        System.out.print("Please enter the name of the vendor you wish to search for: ");
-        String userVendorInput = scanner.nextLine().toUpperCase();
+        String userVendorInput = UtilityMethods.validateStringInput(scanner, "Please enter the name of the vendor you wish to search for: ").toUpperCase();
         // loop through the ArrayList to find matching results
+        Collections.sort(transactionHistory, Comparator.comparing(Transaction::getDate).reversed());
+        boolean vendorFound = false;
         for (Transaction transaction : transactionHistory) {
             // Check if the vendor name contains the user's input (case-insensitive)
             // You can also do .equalIgnore();
             if (transaction.getVendor().toUpperCase().contains(userVendorInput)) {
                 System.out.println(transaction);
             }
+        }
+
+        // Display an error message if no vendor is found
+        if (!vendorFound) {
+            System.out.println("\nNo transactions found for the vendor: " + userVendorInput);
         }
         // Return to the home screen
         goToHomeScreen(scanner);
@@ -636,26 +645,27 @@ public class AccountingLedger {
 
         // Prompt the user to enter search criteria
         System.out.print("Reports - Please Insert the following Search Criteria: ");
-        System.out.print("\nStart date (YYYY-MM-DD): ");
-        String userStartDateInput = scanner.nextLine().trim();
+
+        // Validate start date input
+        String userStartDateInput = UtilityMethods.validateDateFormat(scanner, "\nStart date (YYYY-MM-DD): ", true);
         if (!userStartDateInput.isEmpty()) {
             checkStartDate = LocalDate.parse(userStartDateInput);
         }
 
-        System.out.print("End date (YYYY-MM-DD): ");
-        String userEndDateInput = scanner.nextLine().trim();
+        // Validate end date input
+        String userEndDateInput =  UtilityMethods.validateDateFormat(scanner, "End date (YYYY-MM-DD): ", true);
         if (!userEndDateInput.isEmpty()) {
             checkEndDate = LocalDate.parse(userEndDateInput);
         }
 
-        System.out.print("Description: ");
-        String checkDescription = scanner.nextLine().trim().toLowerCase();
+        // Validate description input
+        String checkDescription = UtilityMethods.validateStringInput(scanner, "Description: ", true).toLowerCase();
 
-        System.out.print("Vendor: ");
-        String checkVendor = scanner.nextLine().trim().toLowerCase();
+        // Validate vendor input
+        String checkVendor = UtilityMethods.validateStringInput(scanner, "Vendor: ", true).toLowerCase();
 
-        System.out.print("Amount (press Enter to skip): ");
-        String checkAmountInputStringValue = scanner.nextLine().trim();
+        // Validate amount input
+        String checkAmountInputStringValue = UtilityMethods.validateStringInput(scanner, "Amount (press Enter to skip): ", true);
         if (!checkAmountInputStringValue.isEmpty()) {
             convertedAmountInput = Double.parseDouble(checkAmountInputStringValue);
         }
@@ -664,7 +674,7 @@ public class AccountingLedger {
         System.out.println("------------------------------------------------------------");
         System.out.println("\t\t\t\tYour Custom Search Report");
         System.out.println("------------------------------------------------------------");
-
+        Collections.sort(transactionHistory, Comparator.comparing(Transaction::getDate).reversed());
         for (Transaction transaction : transactionHistory) {
             // Parses the date string from the Transaction object to a LocalDate object.
             // This allows us to perform date comparisons.
@@ -693,8 +703,8 @@ public class AccountingLedger {
 
         // Return to the home screen
         goToHomeScreen(scanner);
-
     }
+
 
     /**
      * Redirects the user to the home screen or other options based on their choice.
@@ -734,6 +744,7 @@ public class AccountingLedger {
 
 /* -resources
 *How to write method comments-- https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html
+*How to sort ArrayList by ASC -- https://www.bezkoder.com/java-sort-arraylist-of-objects/
 *How to check dates before or after-- https://docs.oracle.com/javase/8/docs/api/java/time/LocalDate.html
 *How to write a good read me-- https://www.makeareadme.com/
 */
