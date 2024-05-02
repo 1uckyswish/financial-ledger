@@ -621,6 +621,7 @@ public class AccountingLedger {
             // Check if the vendor name contains the user's input (case-insensitive)
             // You can also do .equalIgnore();
             if (transaction.getVendor().toUpperCase().contains(userVendorInput)) {
+                vendorFound = true;
                 System.out.println(transaction);
             }
         }
