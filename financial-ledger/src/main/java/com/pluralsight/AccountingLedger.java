@@ -414,7 +414,7 @@ public class AccountingLedger {
         System.out.println("(4) Previous Year");
         System.out.println("(5) Search by Vendor - Enter the vendor name to display all entries for that vendor");
         System.out.println("(6) Custom Search - Enter any input for filtered search");
-        System.out.println("(7) Back - Return to the report page");
+        System.out.println("(7) Back - Return to the ledger page");
         System.out.println("(8) Home - Return to the home page");
 
         // Prompt user for choice
@@ -714,7 +714,7 @@ public class AccountingLedger {
         while (true) {
             System.out.println("\nPlease select your next action:");
             System.out.println("1. Go back home");
-            System.out.println("2. View ledger reports");
+            System.out.println("2. View reports");
             System.out.println("3. Exit Program");
             System.out.print("Enter your choice: ");
             String userChoice = scanner.nextLine();
@@ -725,7 +725,7 @@ public class AccountingLedger {
                     return; // Break out of the loop
                 case "2":
                     // View other ledger reports
-                    displayLedger(scanner);
+                    displayReports(scanner);
                     return; // Break out of the loop
                 case "3":
                     // Exit
